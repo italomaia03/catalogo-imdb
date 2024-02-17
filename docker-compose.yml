@@ -1,0 +1,57 @@
+version: '3.5'
+services:
+
+  app:
+    image: 'catalogo-filmes-spring-web'
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: catalogo-filmes
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://db:${POSTGRES_DOCKER_PORT}/${POSTGRES_DB}"
+      SPRING_DATASOURCE_USERNAME: "${SPRING_DATASOURCE_USERNAME}"
+      SPRING_DATASOURCE_PASSWORD: "${SPRING_DATASOURCE_PASSWORD}"
+      SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
+    ports:
+      - "8080:8080"
+    networks:
+      - postgres
+
+  db:
+    container_name: postgres_db_desafio
+    image: postgres:16.2-alpine3.19
+    environment:
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+      POSTGRES_PORT: "${POSTGRES_PORT}"
+      PG_DATA: "/data/postgres"
+
+    volumes:
+      - data:/data/postgres
+      - init:/docker-entrypoint-initdb.d
+    ports:
+      - ${POSTGRES_PORT}:5432
+    networks:
+      - postgres
+    restart: unless-stopped
+
+networks:
+  postgres:
+    driver: bridge
+volumes:
+  init:
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/infra/scripts"
+  data:
+    driver: local
+    driver_opts:
+      type: "none"
+      o: "bind"
+      device: "$PWD/infra/postgres"
+
