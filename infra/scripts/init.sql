@@ -11,13 +11,13 @@ CREATE TABLE IF NOT EXISTS filmes
 CREATE TABLE IF NOT EXISTS atores
 (
     id_ator   SERIAL PRIMARY KEY,
-    nome_ator VARCHAR NOT NULL
+    nome_ator VARCHAR NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS diretores
 (
     id_diretor   SERIAL PRIMARY KEY,
-    nome_diretor VARCHAR NOT NULL
+    nome_diretor VARCHAR NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS filme_ator
