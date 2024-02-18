@@ -26,12 +26,12 @@ public class Filme {
     private BigInteger orcamentoFilme;
     @Column(name = "descricao")
     private String descricao;
-    @Column(name = "diretor_filme", nullable = false, insertable = false, updatable = false)
+    @Column(name = "diretor_filme", nullable = false)
     @JsonIgnore
     private Integer diretorFilmeId;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "diretor_filme", referencedColumnName = "id_diretor")
+    @JoinColumn(name = "diretor_filme", referencedColumnName = "id_diretor", insertable = false, updatable = false)
     private Diretor diretorFilme;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
