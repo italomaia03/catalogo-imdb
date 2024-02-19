@@ -17,9 +17,9 @@ import java.util.Set;
 @Service
 public class FilmeService {
 
-    private FilmeRepository filmeRepository;
-    private AtorService atorService;
-    private DiretorService diretorService;
+    private final FilmeRepository filmeRepository;
+    private final AtorService atorService;
+    private final DiretorService diretorService;
 
     public FilmeService(FilmeRepository filmeRepository, AtorService atorService, DiretorService diretorService) {
         this.filmeRepository = filmeRepository;
@@ -44,7 +44,7 @@ public class FilmeService {
         Set<Ator> atoresFilme = new HashSet<>();
         filmeDto.atoresFilme()
                 .stream()
-                .map(atorDto -> atorService.cadastrarNovoAtor(atorDto))
+                .map(atorService::cadastrarNovoAtor)
                 .forEach(atoresFilme::add);
         Diretor diretorFilme = diretorService.cadastrarNovoDiretor(filmeDto.diretorFilme());
         Filme novoFilme = filmeRepository.save(montarNovoFilme(filmeDto, diretorFilme, atoresFilme));
@@ -59,18 +59,12 @@ public class FilmeService {
         filmeRepository.vincularAtoresFilme(atorFilmeDto);
     }
 
-    private Filme montarNovoFilme(FilmeDto filmeDto, Diretor diretorFilme, Set<Ator> atoresSet) {
-        Filme novoFilme = new Filme();
+    private Filme montarNovoFilme(FilmeDto filmeDto, Diretor diretorFilme, Set<Ator> atoresFilme) {
+        Filme novoFilme = filmeDto.mapearParaEntidade();
 
-        novoFilme.setNomeFilme(filmeDto.nomeFilme());
-        novoFilme.setDuracaoTotalMinutos(filmeDto.duracaoTotalMinutos());
-        novoFilme.setAvaliacaoFilme(filmeDto.avaliacaoFilme());
-        novoFilme.setAnoLancamentoFilme(filmeDto.anoLancamentoFilme());
-        novoFilme.setOrcamentoFilme(filmeDto.orcamentoFilme());
-        novoFilme.setDescricao(filmeDto.descricao());
         novoFilme.setDiretorFilmeId(diretorFilme.getIdDiretor());
         novoFilme.setDiretorFilme(diretorFilme);
-        novoFilme.setAtoresFilme(atoresSet);
+        novoFilme.setAtoresFilme(atoresFilme);
 
         return novoFilme;
     }

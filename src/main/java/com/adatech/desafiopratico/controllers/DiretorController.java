@@ -1,7 +1,6 @@
 package com.adatech.desafiopratico.controllers;
 
 import com.adatech.desafiopratico.dto.DiretorDto;
-import com.adatech.desafiopratico.excecoes.RegistroRepetidoException;
 import com.adatech.desafiopratico.models.Diretor;
 import com.adatech.desafiopratico.services.DiretorService;
 import org.springframework.http.HttpStatus;
@@ -26,13 +25,8 @@ public class DiretorController {
     }
 
     @PostMapping
-    public ResponseEntity<Diretor> cadastrarNovoDiretor(@RequestBody DiretorDto diretorDto) throws RegistroRepetidoException {
+    public ResponseEntity<Diretor> cadastrarNovoDiretor(@RequestBody DiretorDto diretorDto) {
         Diretor novoDiretor = diretorService.cadastrarNovoDiretor(diretorDto);
-        if (novoDiretor == null) {
-            throw new RegistroRepetidoException(
-                    String.format("O diretor %s já se encontra cadastrado.", diretorDto.getNome())
-            );
-        }
         return new ResponseEntity<>(novoDiretor, HttpStatus.CREATED);
     }
 }
