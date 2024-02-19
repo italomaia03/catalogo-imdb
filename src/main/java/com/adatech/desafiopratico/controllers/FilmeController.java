@@ -26,7 +26,8 @@ public class FilmeController {
     }
 
     @PostMapping
-    public Filme cadastrarNovoFilme(@RequestBody FilmeDto filme) {
-        return null;
+    public ResponseEntity<Filme> cadastrarNovoFilme(@RequestBody FilmeDto filmeDto) {
+        Filme novoFilme = filmeService.cadastrarNovoFilme(filmeDto);
+        return new ResponseEntity<>(novoFilme, HttpStatus.CREATED);
     }
 }
