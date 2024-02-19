@@ -37,8 +37,8 @@ public class Filme {
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(
             name = "filme_ator",
-            joinColumns = {@JoinColumn(name = "id_filme")},
-            inverseJoinColumns = {@JoinColumn(name = "id_ator")}
+            joinColumns = {@JoinColumn(name = "id_filme", insertable = false, updatable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "id_ator", insertable = false, updatable = false)}
     )
     private Set<Ator> atoresFilme;
 
