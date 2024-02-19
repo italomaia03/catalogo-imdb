@@ -1,3 +1,24 @@
 package com.adatech.desafiopratico.dto;
 
-public class AtorDto extends PessoaDto{}
+import com.adatech.desafiopratico.models.Ator;
+
+public class AtorDto extends PessoaDto{
+
+    public AtorDto(String nome) {
+        super(nome);
+    }
+
+    public AtorDto() {
+    }
+
+    @Override
+    public Object mapearParaDto(Object objeto) {
+        Ator ator = (Ator) objeto;
+        return new AtorDto(ator.getNomeAtor());
+    }
+
+    @Override
+    public Object mapearParaEntidade() {
+        return new Ator(this.getNome());
+    }
+}

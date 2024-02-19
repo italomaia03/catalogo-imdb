@@ -1,3 +1,23 @@
 package com.adatech.desafiopratico.dto;
 
-public class DiretorDto extends PessoaDto{}
+import com.adatech.desafiopratico.models.Diretor;
+
+public class DiretorDto extends PessoaDto{
+    public DiretorDto(String nome) {
+        super(nome);
+    }
+
+    public DiretorDto() {
+    }
+
+    @Override
+    public Object mapearParaDto(Object objeto) {
+        Diretor diretor = (Diretor) objeto;
+        return new DiretorDto(diretor.getNomeDiretor());
+    }
+
+    @Override
+    public Object mapearParaEntidade() {
+        return new Diretor(this.getNome());
+    }
+}
