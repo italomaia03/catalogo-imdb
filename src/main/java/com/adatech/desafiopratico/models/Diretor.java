@@ -20,6 +20,13 @@ public class Diretor {
     @OneToMany(mappedBy = "diretorFilme", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Filme> filmesDiretor;
 
+    public Diretor(String nomeDiretor) {
+        this.nomeDiretor = nomeDiretor;
+    }
+
+    public Diretor() {
+    }
+
     public Integer getIdDiretor() {
         return idDiretor;
     }

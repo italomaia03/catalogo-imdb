@@ -19,6 +19,13 @@ public class Ator {
     private Set<Filme> filmesAtor;
 
 
+    public Ator(String nomeAtor) {
+        this.nomeAtor = nomeAtor;
+    }
+
+    public Ator() {
+    }
+
     public Integer getIdAtor() {
         return idAtor;
     }
