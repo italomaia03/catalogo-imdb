@@ -22,7 +22,7 @@ public class AtorService {
     public Ator cadastrarNovoAtor(AtorDto atorDto) {
         Ator novoAtor = new Ator();
         novoAtor.setNomeAtor(atorDto.getNome());
-        System.out.println(atorRepository.adicionarNovoAtor(novoAtor));
+        novoAtor = atorRepository.adicionarNovoAtor(novoAtor);
         return novoAtor;
     }
 }
