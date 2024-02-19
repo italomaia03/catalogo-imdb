@@ -14,4 +14,6 @@ public interface AtorRepository extends JpaRepository<Ator, Integer> {
     @Transactional
     @Query(value = "INSERT INTO atores (nome_ator) VALUES (:#{#ator.getNomeAtor()}) ON CONFLICT DO NOTHING RETURNING *", nativeQuery = true)
     Ator adicionarNovoAtor(@Param("ator") Ator ator);
+
+    Ator findAtorByNomeAtor(String nome);
 }

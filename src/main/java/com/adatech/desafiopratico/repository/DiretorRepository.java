@@ -13,4 +13,5 @@ public interface DiretorRepository extends JpaRepository<Diretor, Integer> {
     @Transactional
     @Query(value = "INSERT INTO diretores (nome_diretor) VALUES (:#{#diretor.getNomeDiretor()}) ON CONFLICT DO NOTHING RETURNING *", nativeQuery = true)
     Diretor adicionarNovoDiretor(@Param("diretor") Diretor diretor);
+    Diretor findDiretorByNomeDiretor(String nomeDiretor);
 }
