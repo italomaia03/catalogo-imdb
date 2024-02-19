@@ -20,8 +20,20 @@ public class DiretorService {
     }
 
     public Diretor cadastrarNovoDiretor(DiretorDto diretorDto){
-        Diretor novoDiretor = new Diretor();
-        novoDiretor.setNomeDiretor(diretorDto.getNome());
-        return diretorRepository.adicionarNovoDiretor(novoDiretor);
+        try {
+            return verificarDiretorEstaCadastrado(diretorDto);
+        } catch (NullPointerException e) {
+            Diretor novoDiretor = new Diretor();
+            novoDiretor.setNomeDiretor(diretorDto.getNome());
+            return diretorRepository.adicionarNovoDiretor(novoDiretor);
+        }
+    }
+
+    private Diretor verificarDiretorEstaCadastrado(DiretorDto diretorDto) {
+        Diretor diretor = diretorRepository.findDiretorByNomeDiretor(diretorDto.getNome());
+        if (diretor == null) {
+            throw new NullPointerException();
+        }
+        return diretor;
     }
 }
