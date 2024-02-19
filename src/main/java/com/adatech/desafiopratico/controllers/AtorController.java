@@ -1,10 +1,12 @@
 package com.adatech.desafiopratico.controllers;
 
+import com.adatech.desafiopratico.dto.AtorDto;
 import com.adatech.desafiopratico.models.Ator;
 import com.adatech.desafiopratico.repository.AtorRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.adatech.desafiopratico.services.AtorService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -12,14 +14,21 @@ import java.util.List;
 @RequestMapping("/api/v1/atores")
 public class AtorController {
 
-    private AtorRepository atorRepository;
+    private AtorService atorService;
 
-    public AtorController(AtorRepository atorRepository) {
-        this.atorRepository = atorRepository;
+    public AtorController(AtorService atorService) {
+        this.atorService = atorService;
     }
 
+
     @GetMapping
-    public List<Ator> buscarTodosAtores() {
-        return atorRepository.findAll();
+    public ResponseEntity<List<Ator>> buscarTodosAtores() {
+        return new ResponseEntity<>(atorService.listarAtores(), HttpStatus.OK);
+    }
+
+    @PostMapping
+    public ResponseEntity<Ator> cadastrarNovoAtor(@RequestBody AtorDto atorDto) {
+        Ator novoAtor = atorService.cadastrarNovoAtor(atorDto);
+        return new ResponseEntity<>(novoAtor, HttpStatus.CREATED);
     }
 }
