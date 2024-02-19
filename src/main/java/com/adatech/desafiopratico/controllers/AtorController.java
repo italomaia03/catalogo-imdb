@@ -1,7 +1,6 @@
 package com.adatech.desafiopratico.controllers;
 
 import com.adatech.desafiopratico.dto.AtorDto;
-import com.adatech.desafiopratico.excecoes.RegistroRepetidoException;
 import com.adatech.desafiopratico.models.Ator;
 import com.adatech.desafiopratico.services.AtorService;
 import org.springframework.http.HttpStatus;
@@ -27,13 +26,8 @@ public class AtorController {
     }
 
     @PostMapping
-    public ResponseEntity<Ator> cadastrarNovoAtor(@RequestBody AtorDto atorDto) throws RegistroRepetidoException {
+    public ResponseEntity<Ator> cadastrarNovoAtor(@RequestBody AtorDto atorDto) {
         Ator novoAtor = atorService.cadastrarNovoAtor(atorDto);
-        if(novoAtor == null) {
-            throw new RegistroRepetidoException(
-                    String.format("Ator %s já está cadastrado.", atorDto.getNome())
-            );
-        }
         return new ResponseEntity<>(novoAtor, HttpStatus.CREATED);
     }
 }

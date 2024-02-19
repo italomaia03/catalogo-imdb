@@ -23,8 +23,7 @@ public class DiretorService {
         try {
             return verificarDiretorEstaCadastrado(diretorDto);
         } catch (NullPointerException e) {
-            Diretor novoDiretor = new Diretor();
-            novoDiretor.setNomeDiretor(diretorDto.getNome());
+            Diretor novoDiretor = (Diretor) diretorDto.mapearParaEntidade();
             return diretorRepository.adicionarNovoDiretor(novoDiretor);
         }
     }
