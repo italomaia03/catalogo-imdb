@@ -21,7 +21,7 @@ public class ExcecoesControllerHandler {
     @ExceptionHandler(NaoEncontradoException.class)
     public ResponseEntity<Object> tratarNaoEncontradoException(NaoEncontradoException naoEncontradoException){
         Map<String, String> mensagem = new HashMap<>();
-        mensagem.put("Erro: ", naoEncontradoException.getMessage());
+        mensagem.put("Erro", naoEncontradoException.getMessage());
         return new ResponseEntity<>(mensagem, HttpStatus.NOT_FOUND);
     }
 }
