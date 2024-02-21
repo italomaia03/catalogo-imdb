@@ -1,7 +1,8 @@
 package com.adatech.desafiopratico.services;
 
-import com.adatech.desafiopratico.dto.FilmeAtorDto;
-import com.adatech.desafiopratico.dto.FilmeDto;
+import com.adatech.desafiopratico.dto.DiretorDto;
+import com.adatech.desafiopratico.dto.filme.FilmeAtorDto;
+import com.adatech.desafiopratico.dto.filme.FilmeDto;
 import com.adatech.desafiopratico.excecoes.NaoEncontradoException;
 import com.adatech.desafiopratico.models.Ator;
 import com.adatech.desafiopratico.models.Diretor;
@@ -49,6 +50,31 @@ public class FilmeService {
         } else {
             return cadastrarNovoFilmeCompleto(filmeDto);
         }
+    }
+
+    public Filme atualizarFilme(Integer idFilme, FilmeDto filmeDto) throws NaoEncontradoException {
+        Filme filmeInteresse = filmeRepository.findById(idFilme)
+                .orElseThrow(() -> new NaoEncontradoException(String.format("Não foi encontrado filme com o ID = %d.", idFilme)));
+        if(temDiretor(filmeDto) && !temAtores(filmeDto)){
+            vincularDiretorFilme(filmeInteresse, filmeDto.diretorFilme());
+        } else if (!temDiretor(filmeDto) && temAtores(filmeDto)) {
+            Set<Ator> atoresFilme = mapearAtoresDtoAtoresFilme(filmeDto);
+            vincularAtoresFilme(filmeInteresse, atoresFilme);
+        } else if (temDiretor(filmeDto) && temAtores(filmeDto)){
+            Set<Ator> atoresFilme = mapearAtoresDtoAtoresFilme(filmeDto);
+            vincularDiretorFilme(filmeInteresse, filmeDto.diretorFilme());
+            vincularAtoresFilme(filmeInteresse, atoresFilme);
+        }
+        return filmeInteresse;
+    }
+
+    private void vincularDiretorFilme(Filme filme, DiretorDto diretorDto) {
+        Diretor diretorFilme = diretorService.cadastrarNovoDiretor(diretorDto);
+
+        filme.setDiretorFilmeId(diretorFilme.getIdDiretor());
+        filme.setDiretorFilme(diretorFilme);
+
+        filmeRepository.vincularDiretorFilme(filme);
     }
 
     private void vincularAtoresFilme(Filme filme, Set<Ator> atoresFilme) {
