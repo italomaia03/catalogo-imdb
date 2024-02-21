@@ -9,7 +9,6 @@ import com.adatech.desafiopratico.models.Filme;
 import com.adatech.desafiopratico.repository.FilmeRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -41,31 +40,67 @@ public class FilmeService {
     }
 
     public Filme cadastrarNovoFilme(FilmeDto filmeDto) {
+        if (!temAtores(filmeDto) && !temDiretor(filmeDto)) {
+            return cadastrarNovoFilmeSemDiretorEAtores(filmeDto);
+        } else if (!temAtores(filmeDto) && temDiretor(filmeDto)) {
+            return cadastrarNovoFilmeSemAtores(filmeDto);
+        } else if (temAtores(filmeDto) && !temDiretor(filmeDto)) {
+            return cadastrarNovoFilmeSemDiretor(filmeDto);
+        } else {
+            return cadastrarNovoFilmeCompleto(filmeDto);
+        }
+    }
+
+    private void vincularAtoresFilme(Filme filme, Set<Ator> atoresFilme) {
+        atoresFilme.forEach(
+                ator -> filmeRepository
+                        .vincularAtoresFilme(new FilmeAtorDto(filme.getIdFilme(), ator.getIdAtor())));
+        filme.setAtoresFilme(atoresFilme);
+    }
+
+
+    private Filme cadastrarNovoFilmeSemDiretorEAtores(FilmeDto filmeDto) {
+        Filme novoFilme = filmeDto.mapearParaEntidade();
+        return filmeRepository.save(novoFilme);
+    }
+
+    private Filme cadastrarNovoFilmeSemAtores(FilmeDto filmeDto) {
+        Filme novoFilme = cadastrarNovoFilmeSemDiretorEAtores(filmeDto);
+        Diretor diretorFilme = diretorService.cadastrarNovoDiretor(filmeDto.diretorFilme());
+        novoFilme.setDiretorFilme(diretorFilme);
+        return filmeRepository.save(novoFilme);
+    }
+
+    private Filme cadastrarNovoFilmeSemDiretor(FilmeDto filmeDto) {
+        Filme novoFilme = cadastrarNovoFilmeSemDiretorEAtores(filmeDto);
+        Set<Ator> atoresFilme = mapearAtoresDtoAtoresFilme(filmeDto);
+        vincularAtoresFilme(novoFilme, atoresFilme);
+        return novoFilme;
+    }
+
+    private Filme cadastrarNovoFilmeCompleto(FilmeDto filmeDto) {
+        Filme novoFilme = cadastrarNovoFilmeSemDiretor(filmeDto);
+        Diretor diretorFilme = diretorService.cadastrarNovoDiretor(filmeDto.diretorFilme());
+        novoFilme.setDiretorFilme(diretorFilme);
+
+        return novoFilme;
+    }
+
+    private Set<Ator> mapearAtoresDtoAtoresFilme(FilmeDto filmeDto) {
         Set<Ator> atoresFilme = new HashSet<>();
         filmeDto.atoresFilme()
                 .stream()
                 .map(atorService::cadastrarNovoAtor)
                 .forEach(atoresFilme::add);
-        Diretor diretorFilme = diretorService.cadastrarNovoDiretor(filmeDto.diretorFilme());
-        Filme novoFilme = filmeRepository.save(montarNovoFilme(filmeDto, diretorFilme, atoresFilme));
-        atoresFilme.forEach(ator -> vincularAtoresFilme(novoFilme, ator));
-        return novoFilme;
+        return atoresFilme;
     }
 
-    private void vincularAtoresFilme(Filme filme, Ator ator) {
-        FilmeAtorDto atorFilmeDto = new FilmeAtorDto(
-                filme.getIdFilme(), ator.getIdAtor()
-        );
-        filmeRepository.vincularAtoresFilme(atorFilmeDto);
+    private Boolean temDiretor(FilmeDto filmeDto) {
+        return filmeDto.diretorFilme() != null;
     }
 
-    private Filme montarNovoFilme(FilmeDto filmeDto, Diretor diretorFilme, Set<Ator> atoresFilme) {
-        Filme novoFilme = filmeDto.mapearParaEntidade();
-
-        novoFilme.setDiretorFilmeId(diretorFilme.getIdDiretor());
-        novoFilme.setDiretorFilme(diretorFilme);
-        novoFilme.setAtoresFilme(atoresFilme);
-
-        return novoFilme;
+    private Boolean temAtores(FilmeDto filmeDto) {
+        return filmeDto.atoresFilme() != null && !filmeDto.atoresFilme().isEmpty();
     }
+
 }
