@@ -1,6 +1,6 @@
 package com.adatech.desafiopratico.repository;
 
-import com.adatech.desafiopratico.dto.FilmeAtorDto;
+import com.adatech.desafiopratico.dto.filme.FilmeAtorDto;
 import com.adatech.desafiopratico.models.Filme;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -20,4 +20,9 @@ public interface FilmeRepository extends JpaRepository<Filme, Integer> {
     @Transactional
     @Query (value = "INSERT INTO filme_ator (id_filme, id_ator) VALUES (:#{#filmeAtor.idFilme()}, :#{#filmeAtor.idAtor()})", nativeQuery = true)
     void vincularAtoresFilme(@Param("filmeAtor") FilmeAtorDto filmeAtor);
+
+    @Modifying
+    @Transactional
+    @Query (value = "UPDATE filmes f SET diretor_filme = :#{#filme.getDiretorFilmeId()} WHERE id_filme = :#{#filme.getIdFilme()}", nativeQuery = true)
+    void vincularDiretorFilme(@Param("filme") Filme filme);
 }
