@@ -11,7 +11,7 @@ import java.util.Set;
 @Table(name = "filmes")
 public class Filme {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_filme")
     private Integer idFilme;
     @Column(name = "nome_filme", nullable = false)
@@ -26,7 +26,7 @@ public class Filme {
     private BigInteger orcamentoFilme;
     @Column(name = "descricao")
     private String descricao;
-    @Column(name = "diretor_filme", nullable = false)
+    @Column(name = "diretor_filme")
     @JsonIgnore
     private Integer diretorFilmeId;
 
