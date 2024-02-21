@@ -1,5 +1,7 @@
-package com.adatech.desafiopratico.dto;
+package com.adatech.desafiopratico.dto.filme;
 
+import com.adatech.desafiopratico.dto.AtorDto;
+import com.adatech.desafiopratico.dto.DiretorDto;
 import com.adatech.desafiopratico.models.Filme;
 
 import java.math.BigInteger;
