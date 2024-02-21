@@ -1,6 +1,6 @@
 package com.adatech.desafiopratico.controllers;
 
-import com.adatech.desafiopratico.dto.FilmeDto;
+import com.adatech.desafiopratico.dto.filme.FilmeDto;
 import com.adatech.desafiopratico.excecoes.NaoEncontradoException;
 import com.adatech.desafiopratico.models.Filme;
 import com.adatech.desafiopratico.services.FilmeService;
@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/filmes")
 public class FilmeController {
-    private FilmeService filmeService;
+    private final FilmeService filmeService;
 
     public FilmeController(FilmeService filmeService) {
         this.filmeService = filmeService;
@@ -29,5 +29,11 @@ public class FilmeController {
     public ResponseEntity<Filme> cadastrarNovoFilme(@RequestBody FilmeDto filmeDto) {
         Filme novoFilme = filmeService.cadastrarNovoFilme(filmeDto);
         return new ResponseEntity<>(novoFilme, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{idFilme}")
+    public ResponseEntity<Filme> atualizarFilme(@PathVariable("idFilme") Integer idFilme, @RequestBody FilmeDto filmeDto) throws NaoEncontradoException {
+        Filme filmeAtualizado = filmeService.atualizarFilme(idFilme, filmeDto);
+        return new ResponseEntity<>(filmeAtualizado, HttpStatus.OK);
     }
 }
