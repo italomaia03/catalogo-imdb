@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS filmes
     ano_lancamento_filme INT     NOT NULL,
     orcamento_filme BIGINT NOT NULL,
     descricao TEXT,
-    diretor_filme INT NOT NULL,
+    diretor_filme INT,
     FOREIGN KEY (diretor_filme) REFERENCES diretores(id_diretor)
 );
 
