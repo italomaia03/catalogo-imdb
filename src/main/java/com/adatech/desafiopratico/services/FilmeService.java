@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -35,12 +36,17 @@ public class FilmeService {
         if (nomeFilme == null || nomeFilme.trim().isEmpty()) {
             filmesEncontrados = filmeRepository.findAll();
         } else {
-            filmesEncontrados = filmeRepository.buscarFilmePorNome(nomeFilme).get();
-            if (filmesEncontrados.isEmpty()) {
-                throw new NaoEncontradoException(String.format("Filme %s não foi encontrado.", nomeFilme));
-            }
+            filmesEncontrados = buscarFilmePorNome(nomeFilme);
         }
         return filmesEncontrados;
+    }
+
+    private List<Filme> buscarFilmePorNome(String nomeFilme) {
+        Optional<List<Filme>> filmesEncontrados = filmeRepository.buscarFilmePorNome(nomeFilme);
+        if (filmesEncontrados.isEmpty()) {
+            throw new NaoEncontradoException(String.format("Filme %s não foi encontrado.", nomeFilme));
+        }
+        return filmesEncontrados.get();
     }
 
     public Filme cadastrarNovoFilme(FilmeDto filmeDto) {
