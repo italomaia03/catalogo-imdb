@@ -1,8 +1,11 @@
 package com.adatech.desafiopratico.services;
 
 import com.adatech.desafiopratico.dto.DiretorDto;
+import com.adatech.desafiopratico.dto.exceptions.DtoInvalidoException;
 import com.adatech.desafiopratico.models.Diretor;
 import com.adatech.desafiopratico.repository.DiretorRepository;
+import com.adatech.desafiopratico.services.exceptions.CampoInvalidoException;
+import com.adatech.desafiopratico.services.exceptions.NaoEncontradoException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,17 +24,18 @@ public class DiretorService {
 
     public Diretor cadastrarNovoDiretor(DiretorDto diretorDto){
         try {
-            return verificarDiretorEstaCadastrado(diretorDto);
-        } catch (NullPointerException e) {
+            diretorDto.validarPessoaDto();
             Diretor novoDiretor = (Diretor) diretorDto.mapearParaEntidade();
             return diretorRepository.adicionarNovoDiretor(novoDiretor);
+        } catch (DtoInvalidoException exception) {
+            throw new CampoInvalidoException(exception.getMessage());
         }
     }
 
-    private Diretor verificarDiretorEstaCadastrado(DiretorDto diretorDto) {
+    public Diretor verificarDiretorEstaCadastrado(DiretorDto diretorDto) {
         Diretor diretor = diretorRepository.findDiretorByNomeDiretor(diretorDto.getNome());
         if (diretor == null) {
-            throw new NullPointerException();
+            throw new NaoEncontradoException("Não foi encontrado diretor com o nome " + diretorDto.getNome() + ".");
         }
         return diretor;
     }
