@@ -8,6 +8,8 @@ public class AtorDto extends PessoaDto{
         super(nome);
     }
 
+    public AtorDto() {
+    }
 
     @Override
     public Object mapearParaEntidade() {

@@ -7,6 +7,9 @@ public class DiretorDto extends PessoaDto{
         super(nome);
     }
 
+    public DiretorDto() {
+    }
+
     @Override
     public Object mapearParaEntidade() {
         return new Diretor(this.getNome());
