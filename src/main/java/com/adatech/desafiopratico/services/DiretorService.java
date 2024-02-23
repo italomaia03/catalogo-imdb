@@ -26,7 +26,7 @@ public class DiretorService {
         try {
             diretorDto.validarPessoaDto();
             Diretor novoDiretor = (Diretor) diretorDto.mapearParaEntidade();
-            return diretorRepository.adicionarNovoDiretor(novoDiretor);
+            return diretorRepository.save(novoDiretor);
         } catch (DtoInvalidoException exception) {
             throw new CampoInvalidoException(exception.getMessage());
         }
