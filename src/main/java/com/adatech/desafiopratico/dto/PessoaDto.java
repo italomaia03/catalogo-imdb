@@ -16,12 +16,6 @@ public abstract class PessoaDto {
         return nome;
     }
 
-    public void setNome(String nome){
-        this.nome = nome;
-    }
-
-    public abstract Object mapearParaDto(Object objeto);
-
     public abstract Object mapearParaEntidade();
 
     public void validarPessoaDto() {
