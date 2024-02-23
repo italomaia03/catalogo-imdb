@@ -8,14 +8,6 @@ public class AtorDto extends PessoaDto{
         super(nome);
     }
 
-    public AtorDto() {
-    }
-
-    @Override
-    public Object mapearParaDto(Object objeto) {
-        Ator ator = (Ator) objeto;
-        return new AtorDto(ator.getNomeAtor());
-    }
 
     @Override
     public Object mapearParaEntidade() {

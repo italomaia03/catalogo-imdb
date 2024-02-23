@@ -9,8 +9,6 @@ public abstract class PessoaDto {
         this.nome = nome;
     }
 
-    public PessoaDto() {
-    }
 
     public String getNome() {
         return nome;

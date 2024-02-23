@@ -7,15 +7,6 @@ public class DiretorDto extends PessoaDto{
         super(nome);
     }
 
-    public DiretorDto() {
-    }
-
-    @Override
-    public Object mapearParaDto(Object objeto) {
-        Diretor diretor = (Diretor) objeto;
-        return new DiretorDto(diretor.getNomeDiretor());
-    }
-
     @Override
     public Object mapearParaEntidade() {
         return new Diretor(this.getNome());
