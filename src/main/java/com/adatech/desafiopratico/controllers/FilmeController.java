@@ -1,7 +1,6 @@
 package com.adatech.desafiopratico.controllers;
 
 import com.adatech.desafiopratico.dto.filme.FilmeDto;
-import com.adatech.desafiopratico.excecoes.NaoEncontradoException;
 import com.adatech.desafiopratico.models.Filme;
 import com.adatech.desafiopratico.services.FilmeService;
 import org.springframework.http.HttpStatus;
@@ -20,7 +19,7 @@ public class FilmeController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Filme>> listarFilmes(@RequestParam(required = false) String nomeFilme) throws NaoEncontradoException {
+    public ResponseEntity<List<Filme>> listarFilmes(@RequestParam(required = false) String nomeFilme) {
         List<Filme> filmesEncontrados = filmeService.buscarFilmes(nomeFilme);
         return new ResponseEntity<>(filmesEncontrados, HttpStatus.OK);
     }
@@ -32,7 +31,7 @@ public class FilmeController {
     }
 
     @PatchMapping("/{idFilme}")
-    public ResponseEntity<Filme> atualizarFilme(@PathVariable("idFilme") Integer idFilme, @RequestBody FilmeDto filmeDto) throws NaoEncontradoException {
+    public ResponseEntity<Filme> atualizarFilme(@PathVariable("idFilme") Integer idFilme, @RequestBody FilmeDto filmeDto) {
         Filme filmeAtualizado = filmeService.atualizarFilme(idFilme, filmeDto);
         return new ResponseEntity<>(filmeAtualizado, HttpStatus.OK);
     }
