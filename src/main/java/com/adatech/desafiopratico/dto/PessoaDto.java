@@ -3,7 +3,7 @@ package com.adatech.desafiopratico.dto;
 import com.adatech.desafiopratico.dto.exceptions.DtoInvalidoException;
 
 public abstract class PessoaDto {
-    private String nome;
+    private final String nome;
 
     public PessoaDto(String nome) {
         this.nome = nome;
