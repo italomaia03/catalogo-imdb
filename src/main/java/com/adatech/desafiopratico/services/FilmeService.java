@@ -1,9 +1,12 @@
 package com.adatech.desafiopratico.services;
 
+import com.adatech.desafiopratico.dto.AtorDto;
 import com.adatech.desafiopratico.dto.DiretorDto;
+import com.adatech.desafiopratico.dto.exceptions.DtoInvalidoException;
 import com.adatech.desafiopratico.dto.filme.FilmeAtorDto;
 import com.adatech.desafiopratico.dto.filme.FilmeDto;
-import com.adatech.desafiopratico.excecoes.NaoEncontradoException;
+import com.adatech.desafiopratico.services.exceptions.CampoInvalidoException;
+import com.adatech.desafiopratico.services.exceptions.NaoEncontradoException;
 import com.adatech.desafiopratico.models.Ator;
 import com.adatech.desafiopratico.models.Diretor;
 import com.adatech.desafiopratico.models.Filme;
@@ -69,7 +72,12 @@ public class FilmeService {
     }
 
     private void vincularDiretorFilme(Filme filme, DiretorDto diretorDto) {
-        Diretor diretorFilme = diretorService.cadastrarNovoDiretor(diretorDto);
+        Diretor diretorFilme;
+        try {
+            diretorFilme = diretorService.verificarDiretorEstaCadastrado(diretorDto);
+        } catch (NaoEncontradoException e) {
+            diretorFilme = diretorService.cadastrarNovoDiretor(diretorDto);
+        }
 
         filme.setDiretorFilmeId(diretorFilme.getIdDiretor());
         filme.setDiretorFilme(diretorFilme);
@@ -84,16 +92,19 @@ public class FilmeService {
         filme.setAtoresFilme(atoresFilme);
     }
 
-
     private Filme cadastrarNovoFilmeSemDiretorEAtores(FilmeDto filmeDto) {
-        Filme novoFilme = filmeDto.mapearParaEntidade();
-        return filmeRepository.save(novoFilme);
+        try {
+            filmeDto.verificarFilmeValido();
+            Filme novoFilme = filmeDto.mapearParaEntidade();
+            return filmeRepository.save(novoFilme);
+        } catch (DtoInvalidoException exception) {
+            throw new CampoInvalidoException(exception.getMessage());
+        }
     }
 
     private Filme cadastrarNovoFilmeSemAtores(FilmeDto filmeDto) {
         Filme novoFilme = cadastrarNovoFilmeSemDiretorEAtores(filmeDto);
-        Diretor diretorFilme = diretorService.cadastrarNovoDiretor(filmeDto.diretorFilme());
-        novoFilme.setDiretorFilme(diretorFilme);
+        vincularDiretorFilme(novoFilme, filmeDto.diretorFilme());
         return filmeRepository.save(novoFilme);
     }
 
@@ -106,8 +117,8 @@ public class FilmeService {
 
     private Filme cadastrarNovoFilmeCompleto(FilmeDto filmeDto) {
         Filme novoFilme = cadastrarNovoFilmeSemDiretor(filmeDto);
-        Diretor diretorFilme = diretorService.cadastrarNovoDiretor(filmeDto.diretorFilme());
-        novoFilme.setDiretorFilme(diretorFilme);
+        vincularDiretorFilme(novoFilme,filmeDto.diretorFilme());
+        vincularAtoresFilme(novoFilme, mapearAtoresDtoAtoresFilme(filmeDto));
 
         return novoFilme;
     }
@@ -116,9 +127,19 @@ public class FilmeService {
         Set<Ator> atoresFilme = new HashSet<>();
         filmeDto.atoresFilme()
                 .stream()
-                .map(atorService::cadastrarNovoAtor)
+                .map(this::cadastroCascadeAtorFilme)
                 .forEach(atoresFilme::add);
         return atoresFilme;
+    }
+
+    private Ator cadastroCascadeAtorFilme(AtorDto atorFilme) {
+        Ator ator;
+        try {
+            ator = atorService.verificarAtorEstaCadastrado(atorFilme);
+        } catch (NaoEncontradoException e) {
+            ator = atorService.cadastrarNovoAtor(atorFilme);
+        }
+        return ator;
     }
 
     private Boolean temDiretor(FilmeDto filmeDto) {
